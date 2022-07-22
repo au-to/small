@@ -28,7 +28,7 @@ const router = new VueRouter({
   routes: [
     {
       path: '/',
-      redirect: 'Home',
+      redirect: '/home',
     },
     {
       path: '/home',
@@ -46,11 +46,11 @@ const router = new VueRouter({
       meta: { show: false }
     },
     {
-      path: '/search/:keyword',
+      path: '/search/:keyword?  ',
       component: Search,
       name: 'search',
       meta: { show: true },
-      props: ($route) => ({ keyword: $route.params.keyword })
+      props: (route) => ({ keyword: route.params.keyword })
     }
   ]
 })

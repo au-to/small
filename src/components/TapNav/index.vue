@@ -2,7 +2,52 @@
   <!-- 商品分类导航 -->
   <div class="type-nav">
     <div class="container">
-      <h2 class="all">全部商品分类</h2>
+      <div @mouseleave="leaveShow"
+           @mouseenter="enterShow">
+        <h2 class="all">全部商品分类</h2>
+
+        <!-- 分类 -->
+        <transition name="sort">
+          <div class="sort"
+               v-show="show">
+            <div class="all-sort-list2"
+                 @click="goSearch">
+              <div class="item"
+                   v-for="(c1,index) in categoryList"
+                   :key="c1.categoryId">
+                <h3 @mouseenter="changeColor(index)"
+                    :class="{cur:currentIndex==index}">
+                  <a href=""
+                     :data-categoryName="c1.categoryName"
+                     :data-category1Id="c1.categoryId">{{c1.categoryName}}</a>
+                </h3>
+                <div class="item-list clearfix"
+                     :style="{display: currentIndex==index ? 'block' : 'none'}">
+                  <div class="subitem">
+                    <dl class="fore"
+                        v-for="(c2) in c1.categoryChild"
+                        :key="c2.categoryId">
+                      <dt>
+                        <a href=""
+                           :data-categoryName="c2.categoryName"
+                           :data-category2Id="c2.categoryId">{{c2.categoryName}}</a>
+                      </dt>
+                      <dd>
+                        <em v-for="(c3) in c2.categoryChild"
+                            :key="c3.categoryId">
+                          <a href=""
+                             :data-categoryName="c3.categoryName"
+                             :data-category3Id="c3.categoryId">{{c3.categoryName}}</a>
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
       <!-- 导航栏 -->
       <nav class="nav">
         <a href="###">服装城</a>
@@ -14,50 +59,81 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <!-- 分类 -->
-      <div class="sort">
-        <div class="all-sort-list2">
-          <div class="item"
-               v-for="(c1) in categoryList"
-               :key="c1.categoryId">
-            <h3>
-              <a href="">{{c1.categoryName}}</a>
-            </h3>
-            <div class="item-list clearfix">
-              <div class="subitem">
-                <dl class="fore"
-                    v-for="(c2) in c1.categoryChild"
-                    :key="c2.categoryId">
-                  <dt>
-                    <a href="">{{c2.categoryName}}</a>
-                  </dt>
-                  <dd>
-                    <em v-for="(c3) in c2.categoryChild"
-                        :key="c3.categoryId">
-                      <a href="">{{c3.categoryName}}</a>
-                    </em>
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
+import throttle from '@/lodash';
 export default {
   name: 'TapNav',
-  mounted () {
-    this.$store.dispatch('getCategoryList');
+  data () {
+    return {
+      currentIndex: -1,
+      show: true
+    }
   },
-   computed: {
+  mounted () {
+    if (this.$route.path != '/home') {
+      this.show = false;
+    }
+  },
+  computed: {
     ...mapState({
-      categoryList: (state)=>state.home.categoryList
-    }) 
+      categoryList: (state) => state.home.categoryList
+    })
+  },
+  methods: {
+    // 鼠标进入改变一级分类背景颜色
+    changeColor: throttle(function (index) {
+      this.currentIndex = index;
+    }, 50),
+    // 鼠标进入
+    enterShow () {
+      if (this.$route.path != '/home') {
+        this.show = true;
+      }
+    },
+    // 鼠标移除
+    leaveShow () {
+      this.currentIndex = -1;
+      if (this.$route.path != '/home') {
+        this.show = false;
+      }
+    },
+    // 路由跳转
+    goSearch (event) {
+      //event.target:获取到的是出发事件的元素(div、h3、a、em、dt、dl)
+      let node = event.target;
+      //给a标签添加自定义属性data-categoryName,全部的字标签当中只有a标签带有自定义属性，别的标签名字----dataset纯属扯淡
+      let { categoryname, category1id, category2id, category3id } = node.dataset;
+      //第二个问题解决了：点击的到底是不是a标签（只要这个标签身上带有categoryname）一定是a标签
+      //当前这个if语句：一定是a标签才会进入
+      if (categoryname) {
+        //准备路由跳转的参数对象
+        let location = { name: "search" };
+        let query = { categoryName: categoryname };
+        //一定是a标签：一级目录
+        if (category1id) {
+          query.category1Id = category1id;
+          //一定是a标签：二级目录
+        } else if (category2id) {
+          query.category2Id = category2id;
+          //一定是a标签：三级目录
+        } else {
+          query.category3Id = category3id;
+        }
+        //判断：如果路由跳转的时候，带有params参数，捎带脚传递过去
+        if (this.$route.params) {
+          location.params = this.$route.params;
+          //动态给location配置对象添加query属性
+          location.query = query;
+          //路由跳转
+          this.$router.push(location);
+        }
+      }
+    },
   },
 }
 </script>
@@ -116,6 +192,10 @@ export default {
             a {
               color: #333;
             }
+
+            &.cur {
+              background: skyblue;
+            }
           }
 
           .item-list {
@@ -171,14 +251,27 @@ export default {
               }
             }
           }
-
-          &:hover {
-            .item-list {
-              display: block;
-            }
-          }
         }
       }
+    }
+
+    .sort-enter {
+      height: 0;
+    }
+    .sort-enter-to {
+      height: 461px;
+    }
+    .sort-enter-active {
+      transition: all 0.5s linear;
+    }
+    .sort-leave {
+      height: 461px;
+    }
+    .sort-leave-to {
+      height: 0;
+    }
+    .sort-leave-active {
+      transition: all 0.5s linear;
     }
   }
 }
