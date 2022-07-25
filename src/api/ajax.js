@@ -1,6 +1,7 @@
 import axios from "axios";
 import Nprogress from 'nprogress'
 import '../../node_modules/nprogress/nprogress.css'
+import store from "@/store";
 
 const requests = axios.create({
   baseURL: '/api',
@@ -9,6 +10,10 @@ const requests = axios.create({
 // 请求拦截器
 requests.interceptors.request.use((config) => {
   Nprogress.start();
+  if (store.state.detail.uuid_token) {
+    // 请求头添加字段userTempId，需要与后端商量
+    config.headers.userTempId = store.state.detail.uuid_token;
+  }
   return config;
 }, (error) => {
   return Promise.reject(error);

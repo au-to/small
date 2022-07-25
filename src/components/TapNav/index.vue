@@ -104,9 +104,9 @@ export default {
     },
     // 路由跳转
     goSearch (event) {
-      //event.target:获取到的是出发事件的元素(div、h3、a、em、dt、dl)
+      //event.target:获取到的是触发事件的元素(div、h3、a、em、dt、dl)
       let node = event.target;
-      //给a标签添加自定义属性data-categoryName,全部的字标签当中只有a标签带有自定义属性，别的标签名字----dataset纯属扯淡
+      //给a标签添加自定义属性data-categoryName,全部的字标签当中只有a标签带有自定义属性
       let { categoryname, category1id, category2id, category3id } = node.dataset;
       //第二个问题解决了：点击的到底是不是a标签（只要这个标签身上带有categoryname）一定是a标签
       //当前这个if语句：一定是a标签才会进入

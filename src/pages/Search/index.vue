@@ -50,11 +50,14 @@
           <!-- 销售产品列表 -->
           <div class="goods-list">
             <ul class="yui3-g">
-              <li class="yui3-u-1-5" v-for="goods in goodsList" :key="goods.id">
+              <li class="yui3-u-1-5"
+                  v-for="goods in goodsList"
+                  :key="goods.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <a href="item.html"
-                       target="_blank"><img :src= goods.defaultImg /></a>
+                    <router-link :to="`/detail/${goods.id}`"
+                    ><img :src=goods.defaultImg />
+                    </router-link>
                   </div>
                   <div class="price">
                     <strong>
@@ -81,6 +84,7 @@
               </li>
             </ul>
           </div>
+          <!-- 分页 -->
           <div class="fr page">
             <div class="sui-pagination clearfix">
               <ul>
@@ -118,19 +122,62 @@
 
 <script>
 import SearchSelector from './SearchSelector';
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'vuex';
 export default {
   name: 'Search',
+  data () {
+    return {
+      searchParams: {
+        //产品相应的id
+        category1Id: "",
+        category2Id: "",
+        category3Id: "",
+        //产品的名字
+        categoryName: "",
+        //搜索的关键字
+        keyword: "",
+        //排序:初始状态应该是综合且降序
+        order: "1:desc",
+        //第几页
+        pageNo: 1,
+        //每一页展示条数
+        pageSize: 3,
+        //平台属性的操作
+        props: [],
+        //品牌
+        trademark: "",
+      }
+    }
+  },
   components: {
     SearchSelector
   },
-  mounted() {
+  beforeMount () {
+    // 发请求之前对请求参数进行整理
+    Object.assign(this.searchParams, this.$route.params, this.$route.query);
+  },
+  mounted () {
     // 动态获取搜索模块的数据
-    this.$store.dispatch('getSearchInfo',{});
+    this.getData();
   },
   computed: {
     ...mapGetters(["goodsList"]),
-  }
+  },
+  watch:{
+    $route(val,oldVal) {
+      Object.assign(this.searchParams,this.$route.query,this.$route.params);
+      this.getData(this.searchParams);
+      this.searchParams.category1Id = '';
+      this.searchParams.category2Id = '';
+      this.searchParams.category3Id = '';
+    }
+  },
+  methods: {
+    // 请求数据
+    getData () {
+      this.$store.dispatch('getSearchInfo', this.searchParams);
+    }
+  },
 }
 </script>
 

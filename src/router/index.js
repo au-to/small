@@ -24,6 +24,9 @@ import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import Search from '@/pages/Search'
+import Detail from '@/pages/Detail'
+import AddCartSuccess from '@/pages/AddCartSuccess'
+import ShopCart from '@/pages/ShopCart'
 const router = new VueRouter({
   routes: [
     {
@@ -50,9 +53,34 @@ const router = new VueRouter({
       component: Search,
       name: 'search',
       meta: { show: true },
-      props: (route) => ({ keyword: route.params.keyword })
+      props: (route) => ({ keyword3: route.params.keyword, keyword4: route.query.keyword2 })
+    },
+    {
+      path: '/detail/:skuId',
+      component: Detail,
+      meta: { show: true }
+    },
+    {
+      name:'addcartsuccess',
+      path: '/addcartsuccess',
+      component: AddCartSuccess,
+      meta: { show: true }
+    },
+    {
+      name:'shopcart',
+      path: '/shopcart',
+      component: ShopCart,
+      meta: { show: true }
+    },
+  ],
+  // 滚动行为
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { x: 0, y: 0 }
     }
-  ]
+  }
 })
 
 export default router
