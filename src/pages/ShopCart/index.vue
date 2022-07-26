@@ -17,7 +17,8 @@
           <li class="cart-list-con1">
             <input type="checkbox"
                    name="chk_list"
-                   :checked=cart.isChecked>
+                   :checked=cart.isChecked
+                   @change="updateCheck(cart,$event)">
           </li>
           <li class="cart-list-con2">
             <img :src=cart.imgUrl>
@@ -45,7 +46,8 @@
           </li>
           <li class="cart-list-con7">
             <a href="#none"
-               class="sindelet">删除</a>
+               class="sindelet"
+               @click="deleteCart(cart)">删除</a>
             <br>
             <a href="#none">移到收藏</a>
           </li>
@@ -56,17 +58,19 @@
       <div class="select-all">
         <input class="chooseAll"
                type="checkbox"
-               checked="allChecked">
+               @change="ischooseAll($event)"
+               :checked=allChecked&&cartInfoList.length>
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a href="#none"
+           @click="deleteAllCheckedCarts">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
       <div class="money-box">
         <div class="chosed">已选择
-          <span>0</span>件商品
+          <span>{{hasChoosedCarts}}</span>件商品
         </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
@@ -107,6 +111,16 @@ export default {
         sum += item.skuNum * item.skuPrice;
       });
       return sum;
+    },
+    // 已选商品个数
+    hasChoosedCarts(){
+      let sum = 0;
+      this.cartInfoList.forEach((item)=>{
+        if(item.isChecked==1){
+          sum++;
+        }
+      })
+      return sum;
     }
   },
   methods: {
@@ -141,7 +155,46 @@ export default {
       } catch (error) {
         Promise.reject(error);
       }
-    }, 500)
+    }, 500),
+    // 删除选中的商品
+    async deleteCart (cart) {
+      try {
+        await this.$store.dispatch('deleteCart', cart.skuId);
+        // 更新购物车数据
+        this.getData();
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    // 修改商品的勾选状态
+    async updateCheck (cart, event) {
+      try {
+        let isChecked = event.target.checked ? '1' : '0';
+        await this.$store.dispatch('updateCheck', { skuId: cart.skuId, isChecked: isChecked });
+        this.getData();
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    // 删除选中的商品
+    async deleteAllCheckedCarts () {
+      try {
+        await this.$store.dispatch('deleteAllCheckedCarts');
+        this.getData();
+      } catch (error) {
+        return error.message;
+      }
+    },
+    // 修改全选状态
+    async ischooseAll (event) {
+      try {
+        let isChecked = event.target.checked ? '1' : '0';
+        await this.$store.dispatch('ischooseAll', isChecked);
+        this.getData();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
   },
 }
 </script>
