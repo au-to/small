@@ -14,6 +14,10 @@ requests.interceptors.request.use((config) => {
     // 请求头添加字段userTempId，需要与后端商量
     config.headers.userTempId = store.state.detail.uuid_token;
   }
+  // 请求头添加token字段
+  if(store.state.user.token){
+    config.headers.token = store.state.user.token;
+  }
   return config;
 }, (error) => {
   return Promise.reject(error);

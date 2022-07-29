@@ -55,8 +55,9 @@
                   :key="goods.id">
                 <div class="list-wrap">
                   <div class="p-img">
-                    <router-link :to="`/detail/${goods.id}`"
-                    ><img :src=goods.defaultImg />
+                    <router-link :to="`/detail/${goods.id}`">
+                      <!-- 图片懒加载 -->
+                      <img :src=goods.defaultImg />
                     </router-link>
                   </div>
                   <div class="price">
@@ -163,9 +164,9 @@ export default {
   computed: {
     ...mapGetters(["goodsList"]),
   },
-  watch:{
-    $route(val,oldVal) {
-      Object.assign(this.searchParams,this.$route.query,this.$route.params);
+  watch: {
+    $route (val, oldVal) {
+      Object.assign(this.searchParams, this.$route.query, this.$route.params);
       this.getData(this.searchParams);
       this.searchParams.category1Id = '';
       this.searchParams.category2Id = '';

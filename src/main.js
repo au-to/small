@@ -11,8 +11,25 @@ Vue.component('TapNav', TapNav);
 import '@/mock/mockServe';
 // 引入轮播图样式
 import 'swiper/css/swiper.css'
+// 引入api接口请求文件
+import * as API from '@/api'
+// element-ui按需引入弹框组件
+import { MessageBox } from 'element-ui';
+Vue.component(MessageBox.name, MessageBox);
+Vue.prototype.$alert = MessageBox.alert;
+// 引入图片懒加载插件
+import VueLazyload from 'vue-lazyload'
+import loadimage from '@/assets/logo.png';
+Vue.use(VueLazyload, {
+  loading: loadimage,
+})
+
 new Vue({
   render: h => h(App),
   router,
-  store
+  store,
+  beforeCreate () {
+    // 全局挂载api
+    Vue.prototype.$API = API;
+  }
 }).$mount('#app')

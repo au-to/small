@@ -16,8 +16,10 @@ export default {
     Footer
   },
   mounted () {
-    this.$store.dispatch('getCategoryList');
-  }
+    // 获取三级联动的数据
+    this.$store.dispatch('getCategoryList')
+    this.$store.dispatch('getUserInfo');
+  },
 }
 </script>
 

@@ -27,6 +27,11 @@ import Search from '@/pages/Search'
 import Detail from '@/pages/Detail'
 import AddCartSuccess from '@/pages/AddCartSuccess'
 import ShopCart from '@/pages/ShopCart'
+import Trade from '@/pages/Trade'
+import Pay from '@/pages/Pay'
+import PaySuccess from '@/pages/PaySuccess'
+import Center from '@/pages/Center'
+
 const router = new VueRouter({
   routes: [
     {
@@ -61,17 +66,37 @@ const router = new VueRouter({
       meta: { show: true }
     },
     {
-      name:'addcartsuccess',
+      name: 'addcartsuccess',
       path: '/addcartsuccess',
       component: AddCartSuccess,
       meta: { show: true }
     },
     {
-      name:'shopcart',
+      name: 'shopcart',
       path: '/shopcart',
       component: ShopCart,
       meta: { show: true }
     },
+    {
+      path: '/trade',
+      component: Trade,
+      meta: { show: true }
+    },
+    {
+      path: '/pay',
+      component: Pay,
+      meta: { show: true }
+    },
+    {
+      path: '/paysuccess',
+      component: PaySuccess,
+      meta: { show: true }
+    },
+    {
+      path: "/center",
+      component: Center,
+      meta: { show: true }
+    }
   ],
   // 滚动行为
   scrollBehavior (to, from, savedPosition) {
@@ -82,5 +107,4 @@ const router = new VueRouter({
     }
   }
 })
-
 export default router
