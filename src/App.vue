@@ -18,7 +18,6 @@ export default {
   mounted () {
     // 获取三级联动的数据
     this.$store.dispatch('getCategoryList')
-    this.$store.dispatch('getUserInfo');
   },
 }
 </script>

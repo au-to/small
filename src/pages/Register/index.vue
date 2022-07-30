@@ -109,7 +109,7 @@ export default {
         await this.$store.dispatch('userRegister', data);
         this.$router.push('/login');
       } catch (error) {
-        alert(error.message);
+        alert('用户名已注册');
       }
     }
   },

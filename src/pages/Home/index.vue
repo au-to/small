@@ -27,6 +27,9 @@ export default {
     Floor,
     Brand
   },
+  mounted() {
+    this.$store.dispatch('getUserInfo');
+  },
 }
 </script>
 

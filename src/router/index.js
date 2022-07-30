@@ -108,4 +108,33 @@ const router = new VueRouter({
     }
   }
 })
+
+import { getToken } from '@/utils/token';
+import store from '@/store';
+// 全局前置守卫
+router.beforeEach((to, from, next) => {
+  // next();
+  let token = getToken();
+  let name = store.state.user.userInfo.name;
+  if (token) {
+    if (to.path == '/login' || to.path == 'register') {
+      next(false);
+    } else {
+      // 登录的情况下去别的页面
+      if (!name) {
+        store.dispatch('getUserInfo');
+        next();
+      } else {
+        next();
+      }
+    }
+  } else {
+    // 未登录情况下
+    if (to.path == '/pay' || to.path == '/paysuccess' || to.path == '/center' || to.path == '/trade') {
+      next('/home');
+    } else {
+      next();
+    }
+  }
+})
 export default router
