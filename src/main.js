@@ -23,6 +23,8 @@ import loadimage from '@/assets/logo.png';
 Vue.use(VueLazyload, {
   loading: loadimage,
 })
+// 引入表单验证插件
+import '@/plugins/vee-validate';
 
 new Vue({
   render: h => h(App),

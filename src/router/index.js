@@ -30,7 +30,8 @@ import ShopCart from '@/pages/ShopCart'
 import Trade from '@/pages/Trade'
 import Pay from '@/pages/Pay'
 import PaySuccess from '@/pages/PaySuccess'
-import Center from '@/pages/Center'
+// 路由懒加载
+const Center = () => import('@/pages/Center');
 
 const router = new VueRouter({
   routes: [
